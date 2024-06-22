@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { Box, Container } from '@mui/material';
+import {
+  DataGridPro,
+  GridColDef,
+  GridRowsProp,
+  DataGridProProps,
+  GridRowSelectionModel,
+} from '@mui/x-data-grid-pro';
 
-function App() {
-  const [count, setCount] = useState(0)
+const columns: GridColDef[] = [
+  { field: 'jobTitle', headerName: 'Job Title', width: 200 },
+  {
+    field: 'recruitmentDate',
+    headerName: 'Recruitment Date',
+    type: 'date',
+    width: 150,
+  },
+];
 
-  return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+const getTreeDataPath: DataGridProProps['getTreeDataPath'] = (row) => row.hierarchy;
+
+interface Props {
+  rowSelectionModel: GridRowSelectionModel, 
+  setRowSelectionModel: (model: GridRowSelectionModel) => void
+  rows: GridRowsProp
 }
 
-export default App
+export default function App({ rowSelectionModel, setRowSelectionModel, rows }: Props) {
+  return (
+    <Container >
+      <Box mt={2}>
+        <DataGridPro
+          treeData
+          rows={rows}
+          columns={columns}
+          getTreeDataPath={getTreeDataPath}
+
+          checkboxSelection
+          onRowSelectionModelChange={(newRowSelectionModel) => {
+            setRowSelectionModel(newRowSelectionModel);
+          }}
+          rowSelectionModel={rowSelectionModel}
+        />
+      </Box>
+    </Container>
+  );
+}
+
